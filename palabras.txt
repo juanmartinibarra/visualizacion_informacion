@@ -1,0 +1,6 @@
+box-and-whiskers plot
+scatter plot matrix
+brushing-and linking
+Dorling cartogram
+Reingold-Tilford algorithm
+Squarified treemaps
