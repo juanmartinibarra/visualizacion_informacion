@@ -1,6 +1,7 @@
 library(arrow)
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
 
 df_paso <- read_parquet("ResultadosElectorales_PASO_2023.parquet")
 View(df_paso)
@@ -149,3 +150,27 @@ ggplot(agrupaciones_ballotage, aes(x = reorder(nombres_simplificados, -total_vot
   geom_text(aes(label=paste(round(porcentaje, 1), "%")), 
             position=position_stack(vjust = 0.5), 
             size=3) 
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Gráfico general
+df_paso_filtrado <- df_paso %>% filter(cargo_id == 1)
+df_generales_filtrado <- df_generales %>% filter(cargo_id == 1)
+df_ballotage_filtrado <- df_ballotage %>% filter(cargo_id == 1)
+
+total_votos_paso <- sum(df_paso_filtered$votos_cantidad)
+total_votos_generales <- sum(df_generales_filtered$votos_cantidad)
+total_votos_ballotage <- sum(df_ballotage_filtered$votos_cantidad)
+
+df_grafico <- data.frame(
+  Eleccion = c("PASO", "Generales", "Ballotage"),
+  Total_Votos = c(total_votos_paso, total_votos_generales, total_votos_ballotage)
+)
+
+ggplot(df_grafico, aes(x = reorder(Eleccion, -Total_Votos), y = Total_Votos, fill = Eleccion)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Total_Votos), vjust = -0.5, size = 3) + 
+  labs(title = "Cantidades de Votos por Elección",
+       x = "Elección",
+       y = "Total de Votos (en millones)") +
+  scale_y_continuous(labels = scales::comma_format(scale = 1e-6, suffix = 'M')) +
+  theme_minimal()
